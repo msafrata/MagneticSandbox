@@ -23,7 +23,7 @@ void ViewportCamera::update() {
     float wheel = GetMouseWheelMove();
     if (wheel != 0.0f) {
         distance *= (wheel > 0.0f) ? 0.9f : 1.1f;
-        distance = Clamp(distance, 0.5f, 100.0f);
+        distance = Clamp(distance, 0.05f, 100.0f);
     }
 
     // Pan: right mouse button

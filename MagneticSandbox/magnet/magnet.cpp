@@ -23,12 +23,25 @@ void magnet::setMagnetisation(float m) {
 	this->magnetisation = m;
 }
 
-void magnet::draw(const RenderResources& res) const {
-    // desk (x, y) -> 3D (x, 0, z); the magnet's center lies in the desk plane
-    Vector3 center = { position.x, 0.0f, position.y };
-    float deg = rotation * RAD2DEG;                       // raylib wants degrees
+void magnet::setRemanence(float Br) {
+	// Br = mu0 * M  ->  M = Br / mu0
+	this->magnetisation = Br / (4.0f * PI * 1e-7f);
+}
 
-    // direction of the magnet's axis (from S to N) in 3D
+float magnet::getMagnetisation() const {
+	return this->magnetisation;
+}
+
+Vector3 magnet::getSize() const {
+	return { this->width, this->height, this->length };
+}
+
+void magnet::draw(const RenderResources& res) const {
+
+    Vector3 center = deskToWorld(position);
+    float deg = rotation * RAD2DEG;
+
+ 
     Vector3 axis = { cosf(rotation), 0.0f, -sinf(rotation) };
     Vector3 offset = Vector3Scale(axis, length / 4.0f);
 
@@ -37,11 +50,10 @@ void magnet::draw(const RenderResources& res) const {
     Vector3 halfSize = { length / 2.0f, height, width };
     Vector3 up = { 0.0f, 1.0f, 0.0f };
 
-    // pole halves
     DrawModelEx(res.box, northPos, up, deg, halfSize, RED);
     DrawModelEx(res.box, southPos, up, deg, halfSize, BLUE);
 
-    // labels: just above the top face, so they don't flicker into the box
+
     float labelSize = fminf(length / 2.0f, width) * 0.8f;
     Vector3 lift = { 0.0f, height / 2.0f + 0.001f, 0.0f };
     Vector3 labelScale = { labelSize, 1.0f, labelSize };
@@ -49,4 +61,3 @@ void magnet::draw(const RenderResources& res) const {
     DrawModelEx(res.labelN, Vector3Add(northPos, lift), up, deg, labelScale, WHITE);
     DrawModelEx(res.labelS, Vector3Add(southPos, lift), up, deg, labelScale, WHITE);
 }
-

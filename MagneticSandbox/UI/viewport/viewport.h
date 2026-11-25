@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+
 #include "../viewport/camera.h"
 #include <memory>
 #include <vector>
@@ -11,6 +12,11 @@ extern ViewportCamera camera;
 bool initViewport();
 
 void drawFrame();
+
+// Desk coordinates (x, y) -> 3D world (x, 0, -y).
+// The minus keeps the desk right-handed: rotation phi on the desk matches
+// the rotation raylib applies around the up axis.
+inline Vector3 deskToWorld(Vector2 p) { return { p.x, 0.0f, -p.y }; }
 
 class baseObject {
 public:
